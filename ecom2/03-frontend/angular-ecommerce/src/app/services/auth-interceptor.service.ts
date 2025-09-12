@@ -1,40 +1,27 @@
-import {Inject, Injectable} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {from, lastValueFrom, Observable} from "rxjs";
-import {OKTA_AUTH} from "@okta/okta-angular";
-import {OktaAuth} from "@okta/okta-auth-js";
+import { Injectable } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthInterceptorService implements HttpInterceptor{
+export class AuthInterceptorService implements HttpInterceptor {
 
-  constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) { }
+  constructor(private authService: AuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    return from(this.handleAccess(request, next));
-
-  }
-
-  private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
-
-    //only add an access token for secured endpoints
+    const token = this.authService.getToken();
     const securedEndpoints = ['http://localhost:8080/api/orders'];
 
-    if(securedEndpoints.some(url => request.urlWithParams.includes(url))){
-
-      const accessToken = this.oktaAuth.getAccessToken();
-
-      //clone the request and add new header with access token
+    if (token && securedEndpoints.some(url => request.urlWithParams.includes(url))) {
       request = request.clone({
         setHeaders: {
-          Authorization: 'Bearer ' + accessToken
+          Authorization: `Bearer ${token}`
         }
       });
     }
 
-    return await lastValueFrom(next.handle(request));
-
+    return next.handle(request);
   }
 }

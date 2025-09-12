@@ -1,0 +1,115 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center">Register</h3>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-success" *ngIf="isSuccessful">
+            Your registration is successful! 
+            <a href="#" (click)="navigateToLogin()" class="alert-link">Please login</a>.
+          </div>
+          
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" *ngIf="!isSuccessful">
+            <div class="alert alert-danger" *ngIf="isSignUpFailed">
+              {{ errorMessage }}
+            </div>
+            
+            <div class="form-group mb-3">
+              <label for="firstName">First Name:</label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-control"
+                [class.is-invalid]="firstName?.invalid && firstName?.touched"
+              />
+              <div *ngIf="firstName?.invalid && firstName?.touched" class="invalid-feedback">
+                <div *ngIf="firstName?.errors?.['required']">First name is required.</div>
+                <div *ngIf="firstName?.errors?.['minlength']">First name must be at least 2 characters.</div>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="lastName">Last Name:</label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-control"
+                [class.is-invalid]="lastName?.invalid && lastName?.touched"
+              />
+              <div *ngIf="lastName?.invalid && lastName?.touched" class="invalid-feedback">
+                <div *ngIf="lastName?.errors?.['required']">Last name is required.</div>
+                <div *ngIf="lastName?.errors?.['minlength']">Last name must be at least 2 characters.</div>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-control"
+                [class.is-invalid]="email?.invalid && email?.touched"
+              />
+              <div *ngIf="email?.invalid && email?.touched" class="invalid-feedback">
+                <div *ngIf="email?.errors?.['required']">Email is required.</div>
+                <div *ngIf="email?.errors?.['email']">Please enter a valid email.</div>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                class="form-control"
+                [class.is-invalid]="password?.invalid && password?.touched"
+              />
+              <div *ngIf="password?.invalid && password?.touched" class="invalid-feedback">
+                <div *ngIf="password?.errors?.['required']">Password is required.</div>
+                <div *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters.</div>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="confirmPassword">Confirm Password:</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                class="form-control"
+                [class.is-invalid]="confirmPassword?.invalid && confirmPassword?.touched"
+              />
+              <div *ngIf="confirmPassword?.invalid && confirmPassword?.touched" class="invalid-feedback">
+                <div *ngIf="confirmPassword?.errors?.['required']">Please confirm your password.</div>
+                <div *ngIf="confirmPassword?.errors?.['passwordMismatch']">Passwords do not match.</div>
+              </div>
+            </div>
+
+            <div class="form-group d-grid">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="isLoading"
+              >
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                {{ isLoading ? 'Registering...' : 'Register' }}
+              </button>
+            </div>
+          </form>
+          
+          <div class="text-center mt-3" *ngIf="!isSuccessful">
+            <p>Already have an account? 
+              <a href="#" (click)="navigateToLogin()" class="text-decoration-none">Sign in here</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
