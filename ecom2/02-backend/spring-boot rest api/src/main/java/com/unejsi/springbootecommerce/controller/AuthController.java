@@ -1,8 +1,23 @@
 package com.unejsi.springbootecommerce.controller;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.unejsi.springbootecommerce.dao.RoleRepository;
 import com.unejsi.springbootecommerce.dao.UserRepository;
 import com.unejsi.springbootecommerce.dto.JwtResponse;
@@ -13,18 +28,6 @@ import com.unejsi.springbootecommerce.entity.Role;
 import com.unejsi.springbootecommerce.entity.User;
 import com.unejsi.springbootecommerce.security.UserDetailsImpl;
 import com.unejsi.springbootecommerce.util.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -85,16 +88,16 @@ public class AuthController {
         user.setLastName(signUpRequest.getLastName());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
+        Set<String> strRoles = signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles == null) {
+        if (strRoles == null || strRoles.isEmpty()) {
             Role userRole = roleRepository.findByName("USER")
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
-                switch (role) {
+                switch (role.toLowerCase()) {
                     case "admin":
                         Role adminRole = roleRepository.findByName("ADMIN")
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

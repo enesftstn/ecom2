@@ -1,22 +1,24 @@
 package com.unejsi.springbootecommerce.dto;
 
+import java.util.Set;
+
 public class SignupRequest {
     private String email;
     private String firstName;
     private String lastName;
     private String password;
-    private String role;
+    private Set<String> roles; // Changed from String role to Set<String> roles
     
     // Default constructor
     public SignupRequest() {}
     
-    // Constructor with parameters
-    public SignupRequest(String email, String firstName, String lastName, String password, String role) {
+    // Updated constructor
+    public SignupRequest(String email, String firstName, String lastName, String password, Set<String> roles) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
     }
     
     // Getters
@@ -36,8 +38,8 @@ public class SignupRequest {
         return password;
     }
     
-    public String getRole() {
-        return role;
+    public Set<String> getRoles() { // Changed getter name and return type
+        return roles;
     }
     
     // Setters
@@ -57,7 +59,7 @@ public class SignupRequest {
         this.password = password;
     }
     
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<String> roles) { // Changed setter name and parameter type
+        this.roles = roles;
     }
 }
